@@ -7,13 +7,17 @@ spec:
   replicas: 4
   strategy:
     canary:
+      analysis:
+        templates:
+        - templateName: http-error-rate-check
       steps:
       - setWeight: 10
       - pause: { duration: 20s }
       - setWeight: 30
       - pause: { duration: 20s }
       - setWeight: 50
-      - pause: {} # Manuel onay için süresiz duraklama
+      - pause: { duration: 30s }
+      - setWeight: 100
   selector:
     matchLabels:
       app: auth-service
@@ -31,10 +35,9 @@ spec:
       containers:
       - name: app
         image: nginxinc/nginx-unprivileged:alpine
-        # --- YENİ SÜRÜM SİMÜLASYONU ---
         env:
         - name: APP_VERSION
-          value: "v2"
+          value: "v3" # İŞTE BURASI: Sürümü v3 yaparak yeni revizyonu zorluyoruz
         ports:
         - containerPort: 8080
         securityContext:
