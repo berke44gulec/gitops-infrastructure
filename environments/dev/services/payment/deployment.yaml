@@ -1,10 +1,18 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: payment-service
   namespace: dev
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    blueGreen:
+      # Canlı trafiğin aktığı asıl servis
+      activeService: payment-service-active
+      # Yeni sürümün test edileceği arka kapı servisi
+      previewService: payment-service-preview
+      # Yeni sürüm başarılı olsa bile biz onay vermeden canlıya geçmesin
+      autoPromotionEnabled: false
   selector:
     matchLabels:
       app: payment-service
@@ -22,6 +30,9 @@ spec:
       containers:
       - name: app
         image: nginxinc/nginx-unprivileged:alpine
+        env:
+        - name: APP_VERSION
+          value: "v1"
         ports:
         - containerPort: 8080
         securityContext:
@@ -30,10 +41,25 @@ spec:
             drop:
             - ALL
 ---
+# 1. CANLI SERVİS (Blue)
 apiVersion: v1
 kind: Service
 metadata:
-  name: payment-service
+  name: payment-service-active
+  namespace: dev
+spec:
+  selector:
+    app: payment-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+---
+# 2. ÖNİZLEME/TEST SERVİSİ (Green)
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service-preview
   namespace: dev
 spec:
   selector:
