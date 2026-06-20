@@ -37,7 +37,7 @@ spec:
         image: nginxinc/nginx-unprivileged:alpine
         env:
         - name: APP_VERSION
-          value: "v6" # Yeni revizyonu fırlatıyoruz
+          value: "v7" # Yeni revizyonu fırlatıyoruz
         ports:
         - containerPort: 8080
         securityContext:
