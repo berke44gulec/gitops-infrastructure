@@ -37,7 +37,7 @@ spec:
         image: nginxinc/nginx-unprivileged:alpine
         env:
         - name: APP_VERSION
-          value: "v3" # İŞTE BURASI: Sürümü v3 yaparak yeni revizyonu zorluyoruz
+          value: "v4" # İŞTE BURASI: Sürümü v3 yaparak yeni revizyonu zorluyoruz
         ports:
         - containerPort: 8080
         securityContext:

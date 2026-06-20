@@ -6,12 +6,12 @@ metadata:
 spec:
   metrics:
   - name: success-rate
-    interval: 5s # Testin hızlı sonuçlanması için 5 saniyede bir sorgula
-    successCondition: result[0] < 0.05 # Hata oranı %5'in altındaysa başarılı say
-    failureLimit: 1 # 1 başarısız ölçümde doğrudan rollback başlat
+    interval: 10s
+    successCondition: result[0] < 0.05
+    failureLimit: 1
+    # İŞTE ARADIĞIMIZ MÜHENDİSLİK ÇÖZÜMÜ:
+    failOnEmpty: true 
     provider:
       prometheus:
-        # Mevcut monitoring namespace'indeki Prometheus servisine bağlanıyoruz
-        address: http://prometheus-k8s.monitoring.svc.cluster.local:9090 
-        # PROD TİPİ MOCK SORGUSU: Sabit olarak %8 hata oranı fırlatır
-        query: vector(0.08)
+        address: http://prometheus-k8s.monitoring.svc.cluster.local:9090
+        query: sum(rate(http_requests_total{status=~"5.*"}[1m]))
