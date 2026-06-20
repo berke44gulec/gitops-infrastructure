@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-apps-manager
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/berke44gulec/gitops-infrastructure.git'
+    targetRevision: HEAD
+    path: apps # Kök uygulama apps klasörünün içindeki diğer Application yaml'larını okuyacak!
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
