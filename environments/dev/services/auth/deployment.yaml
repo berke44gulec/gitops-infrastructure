@@ -21,7 +21,7 @@ spec:
           type: RuntimeDefault
       containers:
       - name: app
-        image: nginxinc/nginx-unprivileged:bu-tag-yok
+        image: nginxinc/nginx-unprivileged:alpine
         ports:
         - containerPort: 8080
         securityContext:
