@@ -6,12 +6,11 @@ metadata:
 spec:
   metrics:
   - name: success-rate
-    interval: 10s
+    interval: 5s # Hızlı yakalaması için 5 saniye
     successCondition: result[0] < 0.05
-    failureLimit: 1
-    # İŞTE ARADIĞIMIZ MÜHENDİSLİK ÇÖZÜMÜ:
-    failOnEmpty: true 
+    # İŞTE KESİN ÇÖZÜM: İlk bağlantı hatasında derhal Rollback yap!
+    consecutiveErrorLimit: 0 
     provider:
       prometheus:
         address: http://prometheus-k8s.monitoring.svc.cluster.local:9090
-        query: sum(rate(http_requests_total{status=~"5.*"}[1m]))
+        query: vector(0.08)
