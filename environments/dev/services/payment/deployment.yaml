@@ -32,7 +32,7 @@ spec:
         image: nginxinc/nginx-unprivileged:alpine
         env:
         - name: APP_VERSION
-          value: "v1"
+          value: "v2"
         ports:
         - containerPort: 8080
         securityContext:
