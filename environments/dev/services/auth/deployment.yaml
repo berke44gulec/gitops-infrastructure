@@ -1,20 +1,19 @@
-apiVersion: argoproj.io/v1alpha1 # Argo Rollouts API'si
+apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: auth-service
   namespace: dev
 spec:
-  replicas: 4 # Kademeli geçişi net görebilmek için replica sayısını 4 yapıyoruz
+  replicas: 4
   strategy:
     canary:
-      # İstediğin kademeli açılım adımları: %10 -> %30 -> %50 -> %100
       steps:
       - setWeight: 10
-      - pause: { duration: 20s } # 20 saniye gözlemle
+      - pause: { duration: 20s }
       - setWeight: 30
       - pause: { duration: 20s }
       - setWeight: 50
-      - pause: {} # Manuel onay için süresiz duraklama (Bölüm B-2'de Prometheus ile otomatize edeceğiz)
+      - pause: {} # Manuel onay için süresiz duraklama
   selector:
     matchLabels:
       app: auth-service
@@ -32,6 +31,10 @@ spec:
       containers:
       - name: app
         image: nginxinc/nginx-unprivileged:alpine
+        # --- YENİ SÜRÜM SİMÜLASYONU ---
+        env:
+        - name: APP_VERSION
+          value: "v2"
         ports:
         - containerPort: 8080
         securityContext:
