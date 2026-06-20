@@ -4,15 +4,15 @@ metadata:
   name: argocd-notifications-cm
   namespace: argocd
 data:
-  # SMTP Sunucu Ayarları (Gmail)
-  service.email.smtp: |
+  # DOĞRU ANAHTAR: service.email.smtp değil, sadece service.email olmalı
+  service.email: |
     host: smtp.gmail.com
     port: 587
     from: argocd-alerts@srv-01.local
     username: berkegulec93@gmail.com
     password: $smtp-password
 
-  # Temiz E-posta Şablonu
+  # Şablon Tanımı
   template.app-sync-failed-email: |
     email:
       subject: "🚨 [ArgoCD Alert] {{.app.metadata.name}} Sync Failed!"
@@ -22,10 +22,10 @@ data:
         <p><strong>Git Deposu:</strong> {{.app.spec.source.repoURL}}</p>
         <p><strong>Durum:</strong> {{.app.status.sync.status}}</p>
         <hr>
-        <p>Kubernetes API sunucusu manifestoyu reddetti veya uygulama Degraded durumunda.</p>
+        <p>Kubernetes API sunucusu manifestoyu reddetti.</p>
 
-  # DOĞRU TETİKLEYİCİ: Sadece Sync başarısızsa veya tamamen bozulduysa tetikle
+  # Tetikleyici Tanımı
   trigger.on-sync-failed: |
-    - description: Gerçek hata durumlarında tetikle
-      when: app.status.sync.status == 'Failed' or app.status.health.status == 'Degraded'
+    - description: Senkronizasyon basarisiz oldugunda tetikle
+      when: app.status.sync.status == 'Failed'
       send: [app-sync-failed-email]
