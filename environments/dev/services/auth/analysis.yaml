@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: http-error-rate-check
+  namespace: dev
+spec:
+  metrics:
+  - name: success-rate
+    interval: 5s # Testin hızlı sonuçlanması için 5 saniyede bir sorgula
+    successCondition: result[0] < 0.05 # Hata oranı %5'in altındaysa başarılı say
+    failureLimit: 1 # 1 başarısız ölçümde doğrudan rollback başlat
+    provider:
+      prometheus:
+        # Mevcut monitoring namespace'indeki Prometheus servisine bağlanıyoruz
+        address: http://prometheus-k8s.monitoring.svc.cluster.local:9090 
+        # PROD TİPİ MOCK SORGUSU: Sabit olarak %8 hata oranı fırlatır
+        query: vector(0.08)
