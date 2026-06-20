@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-notifications-cm
+  namespace: argocd
+data:
+  # SMTP Sunucu Ayarları (Gmail)
+  service.email.smtp: |
+    host: smtp.gmail.com
+    port: 587
+    from: argocd-alerts@srv-01.local
+    username: berkegulec93@gmail.com
+    password: $smtp-password
+
+  # Tetikleyici Tanımı ve E-posta Şablonu
+  template.app-sync-failed-email: |
+    email:
+      subject: "🚨 [ArgoCD Alert] {{.app.metadata.name}} Sync Failed!"
+      body: |
+        <h3>ArgoCD Uygulama Senkronizasyon Hatasi</h3>
+        <p><strong>Uygulama Adi:</strong> {{.app.metadata.name}}</p>
+        <p><strong>Hedef Namespace:</strong> {{.app.spec.destination.namespace}}</p>
+        <p><strong>Hata Durumu:</strong> {{.app.status.health.status}} / {{.app.status.sync.status}}</p>
+        <hr>
+        <p>Lutfen srv-01 uzerindeki ArgoCD panelinden loglari kontrol edin.</p>
+
+  trigger.on-sync-failed: |
+    - description: Uygulama degraded durumuna duserse tetikle
+      when: app.status.health.status == 'Degraded'
+      send: [app-sync-failed-email]
