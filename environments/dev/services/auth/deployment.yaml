@@ -9,7 +9,6 @@ spec:
     canary:
       steps:
       - setWeight: 10
-      # İŞTE YENİ KALİTE KAPIMIZ: %10'u bastıktan sonra dur. Bu analiz bitmeden %30'a geçmek yasak!
       - analysis:
           templates:
           - templateName: http-error-rate-check
@@ -37,7 +36,7 @@ spec:
         image: nginxinc/nginx-unprivileged:alpine
         env:
         - name: APP_VERSION
-          value: "v7" # Yeni revizyonu fırlatıyoruz
+          value: "v7"
         ports:
         - containerPort: 8080
         securityContext:
