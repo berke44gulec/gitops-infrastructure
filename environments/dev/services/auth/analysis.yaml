@@ -6,10 +6,8 @@ metadata:
 spec:
   metrics:
   - name: success-rate
-    # Arka planda sürekli çalışmak yerine tek 1 kez ölçüm yapacak
     count: 1 
     successCondition: result[0] < 0.05
-    # Eğer Prometheus'a bağlanamazsa bunu tolere etmeyip anında Error fırlatacak
     consecutiveErrorLimit: 0 
     provider:
       prometheus:
