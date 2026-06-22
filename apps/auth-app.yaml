@@ -4,7 +4,6 @@ metadata:
   name: dev-auth-app
   namespace: argocd
   annotations:
-    # İŞTE BURASI: Hata durumunda hangi e-postaya gönderileceğini buraya yazıyoruz
     notifications.argoproj.io/subscribe.on-sync-failed.email: berkegulec93@gmail.com
   finalizers:
     - resources-finalizer.argocd.argoproj.io
